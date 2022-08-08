@@ -1,0 +1,225 @@
+<data_w>
+	<ll>
+		<log_level>1</log_level> <!--Controls the display level of the running code print statements, 0 = off, 1 = low, 2 = Medium, 3 = high-->
+    </ll>
+
+	<mqtt_broker> <!-- Details of the message queue where the xml file will be posted -->
+		<hostname>localhost</hostname> <!-- IP address of database or queue host-->
+		<username>admin</username>  <!-- User Name-->
+		<password>admin</password>  <!-- Password-->
+		<port>1883</port> <!-- ActiveMQ local = 1883, AmazonMQ cloud = 8883 -->
+		<tls>0</tls> <!-- ActiveMQ local = 0, AmazonMQ cloud = 1 -->
+		<qos>0</qos> <!-- Quality Of Service, MQTT Only -->
+		<retain>False</retain> <!-- Retain Messages, MQTT Only  -->
+	</mqtt_broker>
+
+	<functions>
+		<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  -->
+		<!--                        WRITE GAC BARGE STATUS                         -->
+		<!--   Write data to a mqtt queue using an xml schema-->
+		<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  -->
+		<function>
+			<f_name>write_gac_barge_sts</f_name>  <!--  Function block name, this will be the reference used by other blocks to -->
+			<f_type>write_gac_barge_sts</f_type>
+			<aux_tags>
+				<aux_tag name="schema">.//gac_config/barge_work_executed_schema.xml</aux_tag>  <!-- Auxiliary data tag, barge work executed schema name-->
+				<aux_tag name="dest_queue">PFPCS.Outbound.WorExecuted</aux_tag>  <!-- Auxiliary data tag, barge work executed schema name-->
+			</aux_tags>
+			<f_com_dat type = 'mqttbroker' poll_time = ''>  <!-- Communication Type and poll time-->
+				<mq>
+					<hostname>localhost</hostname> <!-- IP address of database or queue host-->
+					<username>admin</username>  <!-- User Name-->
+					<password>admin</password>  <!-- Password-->
+					<port>1883</port> <!-- ActiveMQ local = 1883, AmazonMQ cloud = 8883 -->
+					<tls>0</tls> <!-- ActiveMQ local = 0, AmazonMQ cloud = 1 -->
+					<qos>0</qos> <!-- Quality Of Service, MQTT Only -->
+					<retain>False</retain> <!-- Retain Messages, MQTT Only  -->
+				</mq>
+			</f_com_dat>
+			<inputs>
+				<input>
+					<ip_tag>source_data_in</ip_tag>  <!--   Input item name-->
+					<ip_link>port_barge_loading_sts</ip_link>  <!--   Name of the mqtt queue for the source data -->
+					<ip_data_type>dint</ip_data_type>  <!--   Not used -->
+				</input>
+			</inputs>
+			<outputs>
+				<output>
+					<op_tag>index200</op_tag>  <!-- Tag name of the source data -->
+					<op_link>Workmaster_ID</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index201</op_tag>  <!-- Tag name of the source data -->
+					<op_link>Barge_Name</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index202</op_tag>  <!-- Tag name of the source data -->
+					<op_link>First_Fast</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index203</op_tag>  <!-- Tag name of the source data -->
+					<op_link>All_Fast</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index204</op_tag>  <!-- Tag name of the source data -->
+					<op_link>First_Cast</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index205</op_tag>  <!-- Tag name of the source data -->
+					<op_link>All_Cast</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index206</op_tag>  <!-- Tag name of the source data -->
+					<op_link>Start_Load</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+				<output>
+					<op_tag>index207</op_tag>  <!-- Tag name of the source data -->
+					<op_link>End_Load</op_link> <!-- XML Schema name -->
+					<op_index>0</op_index><!-- Index pointer to input data (if input data is an array) -->
+					<op_data_type>string</op_data_type>
+				</output>
+			</outputs>
+		</function>
+
+
+		<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  -->
+		<!--                        READ FROM SIEMENS PLC  (SNAP7)                    -->
+		<!--                        MONITOR BARGE LOADING STATUS                    -->
+		<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  -->
+
+		<function>
+			<f_name>port_barge_loading_sts</f_name>  <!--  Function block name, this will be the reference used by other blocks to -->
+			<f_type>read_snap7</f_type>
+			<f_com_dat type = 'plc_eth' poll_time = '10'>  <!-- Communication Type and poll time-->
+				<plc>
+					<host_ip>192.168.102.200</host_ip>
+					<rack>0</rack>
+					<slot>3</slot>
+				</plc>
+			</f_com_dat>
+			<inputs>
+				<!--   Read the value of the word bit in the PLC, 1 = Healthy, 0 = Alarm-->
+				<input>
+					<ip_tag>Workmaster_ID</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2:12:10</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>Barge_Name</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2:12:10</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>First_Fast</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2486:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>All_Fast</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2508:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>First_Cast</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2530:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>All_Cast</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2552:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>Start_Load</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2574:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+				<input>
+					<ip_tag>End_Load</ip_tag>  <!--   Input item name-->
+					<ip_link>2099:2596:22:20</ip_link>  <!--   DB Number, Index Pointer, Data Length, String Length (optional string only) -->
+					<ip_data_type>string</ip_data_type>  <!--   Input Data Type -->
+				</input>
+			</inputs>
+			<outputs>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="0">Workmaster_ID</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>Workmaster_ID</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>string</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="0">Barge_Name</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>Barge_Name</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">First_Fast</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv  list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>First_Fast</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">All_Fast</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>All_Fast</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">First_Cast</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>First_Cast</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">All_Cast</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>All_Cast</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">Start_Load</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>Start_Load</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+				<output>
+					<!-- (optional;mode) - Update Mode; 0 = 'always', 1 = 'on change'-->
+					<op_tag mode="1">End_Load</op_tag>  <!-- Output Tag Name -->
+					<!-- (optional; comp='csv list of values to compare' ;cval='csv list of replacement values or functions' ) - ' -->
+					<op_link>End_Load</op_link>  <!--   Input item link -->
+					<op_index>0</op_index> <!--   Input value list index -->
+					<op_data_type>dint</op_data_type>  <!--   Output Data Type -->
+				</output>
+			</outputs>
+		</function>
+	</functions>
+</data_w>

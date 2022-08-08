@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:NotifyWorkExecutedEvent xmlns:p="http://www.mesa.org/xml/B2MML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <p:ApplicationArea>
+  	<p:Sender>
+  		<p:LogicalID>BCS</p:LogicalID>
+  		<p:ComponentID>PTGM2</p:ComponentID>
+  	</p:Sender>
+    <p:CreationDateTime>2001-12-31T12:00:00Z</p:CreationDateTime>
+  </p:ApplicationArea>
+  <p:DataArea>
+    <p:Notify/>
+    <p:WorkExecutedEvent>
+      <p:AddedJobResponseRecord>
+        <p:JobResponse>
+        	<p:ID>uuid</p:ID>
+        	<p:HierarchyScope>
+        		<p:EquipmentID>GAC</p:EquipmentID>
+        		<p:EquipmentLevel>Enterprise</p:EquipmentLevel>
+        		<p:HierarchyScope>
+        			<p:EquipmentID>Kamsar Port</p:EquipmentID>
+        			<p:EquipmentLevel>Site</p:EquipmentLevel>
+        			<p:HierarchyScope>
+        				<p:EquipmentID>Barge Load Out</p:EquipmentID>
+        				<p:EquipmentLevel>Area</p:EquipmentLevel>
+        			</p:HierarchyScope>
+        		</p:HierarchyScope>
+        	</p:HierarchyScope>
+        	<p:JobOrderID>uuid</p:JobOrderID>
+        	<p:WorkMasterID>index200</p:WorkMasterID>
+        	<p:PhysicalAssetActual>
+
+        		<p:PhysicalAssetClassID>Barge</p:PhysicalAssetClassID>
+        		<p:PhysicalAssetID>index201</p:PhysicalAssetID>
+        		<p:PhysicalAssetUse>Used</p:PhysicalAssetUse>
+        		<p:PhysicalAssetActualProperty>
+        			<p:ID>First Line</p:ID>
+        			<p:Description>The time the barge first line was tied at the Barge Loading Area Route point</p:Description>
+        			<p:Value>
+        				<p:ValueString>index202</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+        		<p:PhysicalAssetActualProperty>
+        			<p:ID>All Fast</p:ID>
+        			<p:Description>The time that all the lines were tied at the Barge Loading Area Route point</p:Description>
+        			<p:Value>
+        				<p:ValueString>index203</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+        		<p:PhysicalAssetActualProperty>
+        			<p:ID>First Line Cast Off</p:ID>
+        			<p:Description>The time the barge first line was cast off at the Barge Loading Area Route point</p:Description>
+        			<p:Value>
+        				<p:ValueString>index204</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+        		<p:PhysicalAssetActualProperty>
+        			<p:ID>All Cast Off</p:ID>
+        			<p:Description>The time all the barge lines were cast off at the Barge Loading Area Route point</p:Description>
+        			<p:Value>
+        				<p:ValueString>index205</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+				<p:PhysicalAssetActualProperty>
+        			<p:ID>Start Loading</p:ID>
+        			<p:Description>The time loading started</p:Description>
+        			<p:Value>
+        				<p:ValueString>index206</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+				<p:PhysicalAssetActualProperty>
+        			<p:ID>End Loading</p:ID>
+        			<p:Description>The time loading ended</p:Description>
+        			<p:Value>
+        				<p:ValueString>index206</p:ValueString>
+        				<p:DataType>DateTime</p:DataType>
+        			</p:Value>
+        		</p:PhysicalAssetActualProperty>
+
+        	</p:PhysicalAssetActual>
+        </p:JobResponse>
+      </p:AddedJobResponseRecord>
+    </p:WorkExecutedEvent>
+  </p:DataArea>
+</p:NotifyWorkExecutedEvent>
